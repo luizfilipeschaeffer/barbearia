@@ -10,10 +10,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Note {
+// Sistema de Autenticação
+model User {
   id        String   @id @default(cuid())
-  title     String
-  content   String
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  // Relacionamentos
+  barbershopId String?
+  barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  BARBER
+  USER
+}
+
+// Barbearias
+model Barbershop {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  phone       String
+  email       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relacionamentos
+  users User[]
+  services Service[]
+}
+
+// Serviços (para futuras implementações)
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal
+  duration    Int      // em minutos
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Configurações do Sistema
+model SystemConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
