@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
 import { validateImageFile, processImageToBase64, ProcessedImage } from '@/lib/imageUtils';
 
 interface ImageUploadProps {
@@ -109,9 +110,11 @@ export default function ImageUpload({ value, onChange, onError, className = '' }
           </div>
         ) : preview ? (
           <div className="space-y-2">
-            <img
+            <Image
               src={preview}
               alt="Preview"
+              width={96}
+              height={96}
               className="w-24 h-24 object-cover rounded-lg mx-auto"
             />
             <p className="text-sm text-gray-600">Clique para alterar a imagem</p>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, MapPin, Phone, Mail, X } from 'lucide-react';
+import Image from 'next/image';
 import ImageUpload from '@/components/ui/ImageUpload';
 
 interface Barbershop {
@@ -249,9 +250,11 @@ export default function BarbershopsPage() {
                   <td className="px-6 py-4">
                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
                       {barbershop.logo ? (
-                        <img
+                        <Image
                           src={barbershop.logo}
                           alt={`Logo ${barbershop.name}`}
+                          width={48}
+                          height={48}
                           className="w-full h-full object-cover"
                         />
                       ) : (

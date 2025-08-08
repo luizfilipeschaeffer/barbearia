@@ -30,7 +30,7 @@ export default function Stats({ items }: StatsProps) {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [animateNumbers]);
 
   const animateNumbers = () => {
     items.forEach((item, index) => {

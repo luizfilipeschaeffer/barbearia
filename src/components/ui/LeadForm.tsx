@@ -55,7 +55,7 @@ export default function LeadForm({
       } else {
         setError(data.error || 'Erro ao cadastrar. Tente novamente.');
       }
-    } catch (err) {
+    } catch {
       setError('Erro de conexão. Tente novamente.');
     } finally {
       setLoading(false);

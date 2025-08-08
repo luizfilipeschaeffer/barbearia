@@ -9,14 +9,8 @@ import {
   BarChart3, 
   Bell, 
   Smartphone, 
-  Shield, 
   CheckCircle, 
-  Star,
-  ChevronRight,
-  Play,
-  MessageCircle,
-  Mail,
-  Phone
+  Play
 } from 'lucide-react';
 import FAQ from '@/components/ui/FAQ';
 import Stats from '@/components/ui/Stats';
@@ -63,13 +57,14 @@ export default function Home() {
     }
   };
 
-  const handleCadastro = () => {
-    if (user) {
-      router.push('/dashboard');
-    } else {
-      router.push('/auth/register');
-    }
-  };
+  // Função para cadastro (removida por não estar sendo usada)
+  // const handleCadastro = () => {
+  //   if (user) {
+  //     router.push('/dashboard');
+  //   } else {
+  //     router.push('/auth/register');
+  //   }
+  // };
 
   if (loading || checkingConfig) {
     return (

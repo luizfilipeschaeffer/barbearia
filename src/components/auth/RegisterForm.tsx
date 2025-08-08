@@ -88,7 +88,7 @@ export default function RegisterForm() {
       } else {
         setDemoError(data.error || 'Erro ao solicitar demonstração. Tente novamente.');
       }
-    } catch (err) {
+    } catch {
       setDemoError('Erro de conexão. Tente novamente.');
     } finally {
       setDemoLoading(false);

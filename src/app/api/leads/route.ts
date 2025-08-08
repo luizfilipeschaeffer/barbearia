@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type');
 
     // Construir filtros
-    const where: any = {};
+    const where: { status?: string; type?: string } = {};
     if (status) where.status = status;
     if (type) where.type = type;
 
