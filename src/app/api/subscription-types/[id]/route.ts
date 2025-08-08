@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma';
 // GET - Buscar tipo de assinatura por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const subscriptionType = await prisma.subscriptionType.findUnique({
       where: { id },
@@ -40,10 +40,10 @@ export async function GET(
 // PUT - Atualizar tipo de assinatura
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { name, description, allowedUsers, allowedBranches, isPublished } = body;
 
@@ -105,10 +105,10 @@ export async function PUT(
 // DELETE - Excluir tipo de assinatura
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Verificar se o tipo de assinatura existe
     const existingType = await prisma.subscriptionType.findUnique({

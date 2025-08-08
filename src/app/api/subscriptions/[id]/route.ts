@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma';
 // GET - Buscar assinatura por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const subscription = await prisma.subscription.findUnique({
       where: { id },
@@ -37,10 +37,10 @@ export async function GET(
 // PUT - Atualizar assinatura
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const {
       subscriptionTypeId,
@@ -143,10 +143,10 @@ export async function PUT(
 // DELETE - Excluir assinatura
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Verificar se a assinatura existe
     const existingSubscription = await prisma.subscription.findUnique({
