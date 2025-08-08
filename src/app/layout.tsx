@@ -14,8 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Barbearia Admin",
-  description: "Plataforma de gerenciamento de barbearias",
+  title: "Barbearia Admin - Sistema de Gestão Completo",
+  description: "Transforme a gestão da sua barbearia com agendamentos online, controle de clientes, equipe e relatórios. Cadastre-se grátis!",
+  keywords: "barbearia, agendamento online, gestão de barbearia, sistema barbearia, cadastro barbearia",
+  authors: [{ name: "Barbearia Admin" }],
+  openGraph: {
+    title: "Barbearia Admin - Sistema de Gestão Completo",
+    description: "Transforme a gestão da sua barbearia com agendamentos online, controle de clientes, equipe e relatórios.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

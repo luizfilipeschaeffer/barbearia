@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search');
 
-    const where: any = {};
+    const where: Prisma.BarbershopWhereInput = {};
 
     if (search) {
       where.OR = [
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, address, phone, email } = await request.json();
+    const { name, address, phone, email, logo } = await request.json();
 
     const barbershop = await prisma.barbershop.create({
       data: {
@@ -58,11 +59,12 @@ export async function POST(request: NextRequest) {
         address,
         phone,
         email,
+        logo,
       },
     });
 
     return NextResponse.json(barbershop);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

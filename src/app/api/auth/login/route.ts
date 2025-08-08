@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

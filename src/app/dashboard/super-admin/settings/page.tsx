@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ToggleLeft, ToggleRight } from 'lucide-react';
 
 interface SystemConfig {
   id: string;

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/auth';
+import { Prisma } from '@prisma/client';
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,10 +11,10 @@ export async function GET(request: NextRequest) {
     const role = searchParams.get('role');
     const search = searchParams.get('search');
 
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
 
     if (role) {
-      where.role = role;
+      where.role = role as Prisma.EnumUserRoleFilter;
     }
 
     if (search) {
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(user);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

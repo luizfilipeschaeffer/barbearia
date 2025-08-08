@@ -26,8 +26,8 @@ export default function LoginForm() {
         const config = await response.json();
         setAllowRegistration(config?.value === 'true');
       }
-    } catch (error) {
-      console.error('Erro ao verificar configuração:', error);
+    } catch {
+      console.error('Erro ao verificar configuração');
     }
   };
 
@@ -39,7 +39,7 @@ export default function LoginForm() {
     try {
       await login(email, password);
       router.push('/dashboard/super-admin');
-    } catch (error) {
+    } catch {
       setError('Credenciais inválidas');
     } finally {
       setLoading(false);

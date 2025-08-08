@@ -37,7 +37,7 @@ export async function POST() {
         role: superAdmin.role,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

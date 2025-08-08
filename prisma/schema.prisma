@@ -40,6 +40,7 @@ model Barbershop {
   address     String
   phone       String
   email       String?
+  logo        String?  // Base64 da imagem
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -47,6 +48,7 @@ model Barbershop {
   // Relacionamentos
   users User[]
   services Service[]
+  subscriptions Subscription[]
 }
 
 // Serviços (para futuras implementações)
@@ -61,6 +63,72 @@ model Service {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// Tipos de Assinatura
+model SubscriptionType {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  allowedUsers  Int
+  allowedBranches Int
+  isPublished   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relacionamentos
+  subscriptions Subscription[]
+}
+
+// Assinaturas das Barbearias
+model Subscription {
+  id                String        @id @default(cuid())
+  barbershopId      String
+  subscriptionTypeId String
+  startDate         DateTime
+  nextBillingDate   DateTime
+  blockDate         DateTime
+  paymentMethod     PaymentMethod
+  
+  // Relacionamentos
+  barbershop        Barbershop        @relation(fields: [barbershopId], references: [id])
+  subscriptionType  SubscriptionType  @relation(fields: [subscriptionTypeId], references: [id])
+}
+
+// Enum para Métodos de Pagamento
+enum PaymentMethod {
+  CREDIT_CARD
+  BOLETO
+  PIX
+}
+
+// Leads - Captura de dados de clientes e investidores
+model Lead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String   // WhatsApp
+  type        LeadType
+  source      String   // "landing_page", "whatsapp", "investor_section", etc.
+  status      LeadStatus @default(NEW)
+  notes       String?  // Observações adicionais
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum LeadType {
+  BARBERSHOP_OWNER  // Dono de barbearia
+  INVESTOR          // Investidor
+  PARTNER           // Parceiro
+  OTHER             // Outro
+}
+
+enum LeadStatus {
+  NEW               // Novo lead
+  CONTACTED         // Entrou em contato
+  INTERESTED        // Interessado
+  CONVERTED         // Convertido em cliente
+  LOST              // Perdido
 }
 
 // Configurações do Sistema

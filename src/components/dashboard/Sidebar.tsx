@@ -10,10 +10,12 @@ import {
   LogOut 
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/AuthProvider';
+import { useState } from 'react';
 
 export function Sidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const menuItems = [
     {
@@ -37,6 +39,22 @@ export function Sidebar() {
       icon: Settings,
     },
   ];
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      // Mesmo com erro, limpar dados locais
+      localStorage.removeItem('token');
+      window.location.href = '/auth/login';
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className="w-64 bg-gray-800 text-white">
@@ -71,11 +89,21 @@ export function Sidebar() {
       
       <div className="absolute bottom-0 w-64 p-6">
         <button
-          onClick={logout}
-          className="flex items-center w-full px-6 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex items-center w-full px-6 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LogOut className="w-5 h-5 mr-3" />
-          Sair
+          {isLoggingOut ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-3"></div>
+              Saindo...
+            </>
+          ) : (
+            <>
+              <LogOut className="w-5 h-5 mr-3" />
+              Sair
+            </>
+          )}
         </button>
       </div>
     </div>

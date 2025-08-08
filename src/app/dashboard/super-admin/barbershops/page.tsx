@@ -1,139 +1,121 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, MapPin, Phone, Mail, X } from 'lucide-react';
+import ImageUpload from '@/components/ui/ImageUpload';
 
-interface User {
+interface Barbershop {
   id: string;
   name: string;
-  email: string;
-  role: string;
+  address: string;
+  phone: string;
+  email?: string;
+  logo?: string;
   isActive: boolean;
   createdAt: string;
+  _count?: {
+    users: number;
+  };
 }
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+export default function BarbershopsPage() {
+  const [barbershops, setBarbershops] = useState<Barbershop[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingBarbershop, setEditingBarbershop] = useState<Barbershop | null>(null);
+  const [createLogo, setCreateLogo] = useState('');
+  const [editLogo, setEditLogo] = useState('');
 
   useEffect(() => {
-    fetchUsers();
+    fetchBarbershops();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchBarbershops = async () => {
     try {
-      const response = await fetch('/api/users');
-      const data = await response.json();
-      setUsers(data.users);
+      const response = await fetch('/api/barbershops');
+      if (response.ok) {
+        const data = await response.json();
+        setBarbershops(data.barbershops || []);
+      } else {
+        console.error('Erro ao buscar barbearias');
+      }
     } catch (error) {
-      console.error('Erro ao buscar usuários:', error);
+      console.error('Erro ao buscar barbearias:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(search.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.toLowerCase())
+  const filteredBarbershops = barbershops.filter(barbershop =>
+    barbershop.name.toLowerCase().includes(search.toLowerCase()) ||
+    barbershop.address.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleCreateUser = async (formData: FormData) => {
+  const handleCreateBarbershop = async (formData: FormData) => {
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/barbershops', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: formData.get('name'),
+          address: formData.get('address'),
+          phone: formData.get('phone'),
           email: formData.get('email'),
-          password: formData.get('password'),
-          role: formData.get('role'),
+          logo: createLogo,
         }),
       });
 
       if (response.ok) {
         setShowCreateModal(false);
-        fetchUsers();
+        setCreateLogo('');
+        fetchBarbershops();
       } else {
-        console.error('Erro ao criar usuário');
+        console.error('Erro ao criar barbearia');
       }
     } catch (error) {
-      console.error('Erro ao criar usuário:', error);
+      console.error('Erro ao criar barbearia:', error);
     }
   };
 
-  const handleEditUser = async (formData: FormData) => {
-    if (!editingUser) return;
+  const handleEditBarbershop = async (formData: FormData) => {
+    if (!editingBarbershop) return;
 
     try {
-      const updateData: {
-        name: string | null;
-        email: string | null;
-        role: string | null;
-        isActive: boolean;
-        password?: string | null;
-      } = {
-        name: formData.get('name') as string | null,
-        email: formData.get('email') as string | null,
-        role: formData.get('role') as string | null,
-        isActive: formData.get('isActive') === 'true',
-      };
-
-      // Só incluir senha se foi fornecida
-      const password = formData.get('password');
-      if (password) {
-        updateData.password = password as string;
-      }
-
-      const response = await fetch(`/api/users/${editingUser.id}`, {
+      const response = await fetch(`/api/barbershops/${editingBarbershop.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({
+          name: formData.get('name'),
+          address: formData.get('address'),
+          phone: formData.get('phone'),
+          email: formData.get('email'),
+          logo: editLogo,
+          isActive: formData.get('isActive') === 'true',
+        }),
       });
 
       if (response.ok) {
         setShowEditModal(false);
-        setEditingUser(null);
-        fetchUsers();
+        setEditingBarbershop(null);
+        setEditLogo('');
+        fetchBarbershops();
       } else {
-        console.error('Erro ao atualizar usuário');
+        console.error('Erro ao editar barbearia');
       }
     } catch (error) {
-      console.error('Erro ao atualizar usuário:', error);
-    }
-  };
-
-  const handleDeleteUser = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        fetchUsers();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erro ao excluir usuário');
-      }
-    } catch (error) {
-      console.error('Erro ao excluir usuário:', error);
+      console.error('Erro ao editar barbearia:', error);
     }
   };
 
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
     try {
-      const response = await fetch(`/api/users/${id}`, {
+      const response = await fetch(`/api/barbershops/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -144,15 +126,39 @@ export default function UsersPage() {
       });
 
       if (response.ok) {
-        fetchUsers();
+        fetchBarbershops();
+      } else {
+        console.error('Erro ao alterar status da barbearia');
       }
     } catch (error) {
-      console.error('Erro ao atualizar status:', error);
+      console.error('Erro ao alterar status da barbearia:', error);
     }
   };
 
-  const openEditModal = (user: User) => {
-    setEditingUser(user);
+  const handleDelete = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta barbearia?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/barbershops/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchBarbershops();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Erro ao excluir barbearia');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir barbearia:', error);
+    }
+  };
+
+  const openEditModal = (barbershop: Barbershop) => {
+    setEditingBarbershop(barbershop);
+    setEditLogo(barbershop.logo || '');
     setShowEditModal(true);
   };
 
@@ -161,9 +167,9 @@ export default function UsersPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Usuários</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Barbearias</h1>
             <p className="text-gray-600 mt-2">
-              Gerencie todos os usuários da plataforma
+              Gerencie todas as barbearias da plataforma
             </p>
           </div>
         </div>
@@ -185,9 +191,9 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Usuários</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Barbearias</h1>
           <p className="text-gray-600 mt-2">
-            Gerencie todos os usuários da plataforma
+            Gerencie todas as barbearias da plataforma
           </p>
         </div>
         <button 
@@ -195,7 +201,7 @@ export default function UsersPage() {
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Novo Usuário
+          Nova Barbearia
         </button>
       </div>
 
@@ -205,7 +211,7 @@ export default function UsersPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar usuários..."
+              placeholder="Buscar barbearias..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -218,13 +224,16 @@ export default function UsersPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nome
+                  Logo
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
+                  Barbearia
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Função
+                  Contato
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Funcionários
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -235,42 +244,74 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {user.name}
+              {filteredBarbershops.map((barbershop) => (
+                <tr key={barbershop.id}>
+                  <td className="px-6 py-4">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                      {barbershop.logo ? (
+                        <img
+                          src={barbershop.logo}
+                          alt={`Logo ${barbershop.name}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-gray-300 rounded flex items-center justify-center">
+                          <span className="text-gray-500 text-xs">Logo</span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {barbershop.name}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500 mt-1">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {barbershop.address}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center text-sm text-gray-900">
+                        <Phone className="w-4 h-4 mr-2" />
+                        {barbershop.phone}
+                      </div>
+                      {barbershop.email && (
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Mail className="w-4 h-4 mr-2" />
+                          {barbershop.email}
+                        </div>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{user.email}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                      {user.role}
+                      {barbershop._count?.users || 0} funcionários
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => handleToggleStatus(user.id, user.isActive)}
+                      onClick={() => handleToggleStatus(barbershop.id, barbershop.isActive)}
                       className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer transition-colors ${
-                        user.isActive
+                        barbershop.isActive
                           ? 'bg-green-100 text-green-800 hover:bg-green-200'
                           : 'bg-red-100 text-red-800 hover:bg-red-200'
                       }`}
                     >
-                      {user.isActive ? 'Ativo' : 'Inativo'}
+                      {barbershop.isActive ? 'Ativa' : 'Inativa'}
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button 
-                      onClick={() => openEditModal(user)}
+                      onClick={() => openEditModal(barbershop)}
                       className="text-blue-600 hover:text-blue-900 mr-3"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleDeleteUser(user.id)}
+                      onClick={() => handleDelete(barbershop.id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -282,10 +323,10 @@ export default function UsersPage() {
           </table>
         </div>
 
-        {filteredUsers.length === 0 && (
+        {filteredBarbershops.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-500">
-              {search ? 'Nenhum usuário encontrado para sua busca.' : 'Nenhum usuário cadastrado.'}
+              {search ? 'Nenhuma barbearia encontrada para sua busca.' : 'Nenhuma barbearia cadastrada.'}
             </div>
           </div>
         )}
@@ -294,101 +335,13 @@ export default function UsersPage() {
       {/* Modal de Criação */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Novo Usuário</h2>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleCreateUser(formData);
-            }}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nome
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Senha
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Função
-                  </label>
-                  <select
-                    name="role"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="USER">Usuário</option>
-                    <option value="BARBER">Barbeiro</option>
-                    <option value="ADMIN">Administrador</option>
-                    <option value="SUPER_ADMIN">Super Admin</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Criar Usuário
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Edição */}
-      {showEditModal && editingUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Editar Usuário</h2>
+              <h2 className="text-xl font-bold">Nova Barbearia</h2>
               <button
                 onClick={() => {
-                  setShowEditModal(false);
-                  setEditingUser(null);
+                  setShowCreateModal(false);
+                  setCreateLogo('');
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
@@ -398,69 +351,176 @@ export default function UsersPage() {
             <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
-              handleEditUser(formData);
+              handleCreateBarbershop(formData);
             }}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nome
+                    Logo da Barbearia
+                  </label>
+                  <ImageUpload
+                    value={createLogo}
+                    onChange={setCreateLogo}
+                    className="mb-4"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome da Barbearia
                   </label>
                   <input
                     type="text"
                     name="name"
-                    defaultValue={editingUser.name}
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
+                    Endereço
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Telefone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email (opcional)
                   </label>
                   <input
                     type="email"
                     name="email"
-                    defaultValue={editingUser.email}
-                    required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setCreateLogo('');
+                  }}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Criar Barbearia
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edição */}
+      {showEditModal && editingBarbershop && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Editar Barbearia</h2>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingBarbershop(null);
+                  setEditLogo('');
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleEditBarbershop(formData);
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Logo da Barbearia
+                  </label>
+                  <ImageUpload
+                    value={editLogo}
+                    onChange={setEditLogo}
+                    className="mb-4"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nova Senha (deixe em branco para manter a atual)
+                    Nome da Barbearia
                   </label>
                   <input
-                    type="password"
-                    name="password"
+                    type="text"
+                    name="name"
+                    defaultValue={editingBarbershop.name}
+                    required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Função
+                    Endereço
                   </label>
-                  <select
-                    name="role"
-                    defaultValue={editingUser.role}
+                  <input
+                    type="text"
+                    name="address"
+                    defaultValue={editingBarbershop.address}
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="USER">Usuário</option>
-                    <option value="BARBER">Barbeiro</option>
-                    <option value="ADMIN">Administrador</option>
-                    <option value="SUPER_ADMIN">Super Admin</option>
-                  </select>
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Telefone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    defaultValue={editingBarbershop.phone}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email (opcional)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    defaultValue={editingBarbershop.email || ''}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="flex items-center">
                     <input
                       type="checkbox"
                       name="isActive"
-                      defaultChecked={editingUser.isActive}
+                      defaultChecked={editingBarbershop.isActive}
                       value="true"
                       className="mr-2"
                     />
-                    <span className="text-sm font-medium text-gray-700">Usuário Ativo</span>
+                    <span className="text-sm font-medium text-gray-700">Barbearia Ativa</span>
                   </label>
                 </div>
               </div>
@@ -469,7 +529,8 @@ export default function UsersPage() {
                   type="button"
                   onClick={() => {
                     setShowEditModal(false);
-                    setEditingUser(null);
+                    setEditingBarbershop(null);
+                    setEditLogo('');
                   }}
                   className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                 >

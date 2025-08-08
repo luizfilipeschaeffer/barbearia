@@ -40,7 +40,7 @@ export async function POST() {
       message: 'Configurações inicializadas com sucesso',
       configs: createdConfigs,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
