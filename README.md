@@ -1,30 +1,89 @@
-# 📝 App de Notas - Next.js + Prisma + PostgreSQL
+# 🪒 Sistema de Gestão de Barbearias
 
-Um aplicativo simples de notas desenvolvido com Next.js 15, Prisma ORM e PostgreSQL (Neon), com interface moderna e funcionalidades completas de CRUD.
+Uma plataforma completa para gestão de barbearias desenvolvida com Next.js 15, Prisma ORM e PostgreSQL (Neon), oferecendo funcionalidades avançadas de agendamento, gestão de clientes e integração com calendários externos.
 
 ## 🚀 Funcionalidades
 
-- ✅ **Criar notas** com título e conteúdo
-- ✅ **Listar notas** em ordem cronológica
-- ✅ **Editar notas** existentes
-- ✅ **Deletar notas** com confirmação
-- ✅ **Interface responsiva** com Tailwind CSS
-- ✅ **Banco PostgreSQL** hospedado no Neon
-- ✅ **APIs RESTful** completas
+### ✅ **Sistema de Autenticação Completo**
+- JWT + bcryptjs para autenticação segura
+- Controle de roles (SUPER_ADMIN, ADMIN, BARBER, USER)
+- Context API para gerenciamento de estado
+- Proteção de rotas por perfil
+
+### ✅ **Gestão de Barbearias**
+- CRUD completo de barbearias
+- Upload de logo e identidade visual
+- Configuração de horários de funcionamento
+- Gestão de equipe e serviços
+
+### ✅ **Sistema de Agendamentos**
+- Interface de agendamentos responsiva
+- Calendário visual interativo
+- Sistema de horários disponíveis
+- Validação de conflitos de horário
+- Drag & drop para reagendamento
+
+### ✅ **Gestão de Clientes**
+- CRUD completo de clientes
+- Histórico de agendamentos por cliente
+- Busca e filtros avançados
+- Criação rápida durante agendamento
+
+### ✅ **Integração com Calendários**
+- Sincronização com Google Calendar
+- Integração com Apple Calendar
+- OAuth2 para autenticação segura
+- Sincronização bidirecional de eventos
+
+### ✅ **Onboarding Interativo**
+- Wizard multi-step para cadastro de barbearias
+- Etapas obrigatórias e opcionais
+- Sincronização de agenda durante onboarding
+- Controle via configurações do sistema
+
+### ✅ **Sistema de Notificações**
+- Notificações de novos agendamentos
+- Lembretes configuráveis
+- Alertas de conflitos de agenda
+- Histórico de notificações
+
+### ✅ **Relatórios e Métricas**
+- Relatórios de agendamentos por período
+- Análise de clientes mais frequentes
+- Relatórios de serviços mais solicitados
+- Gráficos e exportação de dados
+
+### ✅ **Interface Moderna**
+- Design responsivo mobile-first
+- Tailwind CSS para estilização
+- Lucide React para ícones
+- Loading states e feedback visual
+- Dark mode support
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: Next.js 15 + React 19 + TypeScript
-- **Estilização**: Tailwind CSS
-- **Ícones**: Lucide React
-- **Backend**: Next.js API Routes
-- **ORM**: Prisma
-- **Banco de Dados**: PostgreSQL (Neon)
-- **Desenvolvimento**: Turbopack
+### **Frontend**
+- **Next.js 15** - Framework React com App Router
+- **React 19** - Biblioteca de interface
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS 4** - Framework CSS utility-first
+- **Lucide React** - Biblioteca de ícones
+
+### **Backend**
+- **Next.js API Routes** - APIs serverless
+- **Prisma ORM** - ORM para banco de dados
+- **PostgreSQL** - Banco de dados (Neon)
+- **JWT** - Autenticação stateless
+- **bcryptjs** - Hash de senhas
+
+### **Desenvolvimento**
+- **Turbopack** - Bundler rápido
+- **ESLint** - Linting de código
+- **TypeScript** - Verificação de tipos
 
 ## 📋 Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 - Conta no Neon (para banco PostgreSQL)
 
@@ -33,7 +92,7 @@ Um aplicativo simples de notas desenvolvido com Next.js 15, Prisma ORM e Postgre
 ### 1. Clone o repositório
 ```bash
 git clone <seu-repositorio>
-cd nextjs-prisma
+cd barbearia
 ```
 
 ### 2. Instale as dependências
@@ -51,11 +110,13 @@ npm install
 
 ```env
 DATABASE_URL="postgresql://usuario:senha@host/database?sslmode=require&channel_binding=require"
+JWT_SECRET="sua-chave-secreta-jwt"
 ```
 
 #### Opção B: Usar SQLite (Desenvolvimento local)
 ```env
 DATABASE_URL="file:./dev.db"
+JWT_SECRET="sua-chave-secreta-jwt"
 ```
 
 ### 4. Configure o Prisma
@@ -83,99 +144,176 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
-O app estará disponível em `http://localhost:3000` (ou porta disponível).
+O sistema estará disponível em `http://localhost:3000` (ou porta disponível).
 
 ## 📁 Estrutura do Projeto
 
 ```
-nextjs-prisma/
+barbearia/
 ├── src/
 │   ├── app/
-│   │   ├── api/notes/
-│   │   │   ├── route.ts          # GET/POST notas
-│   │   │   └── [id]/route.ts     # PUT/DELETE nota específica
+│   │   ├── api/
+│   │   │   ├── auth/              # Autenticação (login, register, logout)
+│   │   │   ├── barbershops/       # Gestão de barbearias
+│   │   │   ├── users/             # Gestão de usuários
+│   │   │   ├── subscriptions/     # Sistema de assinaturas
+│   │   │   └── config/            # Configurações do sistema
+│   │   ├── auth/                  # Páginas de autenticação
+│   │   ├── dashboard/             # Dashboard administrativo
 │   │   ├── layout.tsx
-│   │   └── page.tsx              # Interface principal
+│   │   └── page.tsx
 │   ├── components/
-│   │   ├── NoteForm.tsx          # Formulário de notas
-│   │   └── NoteCard.tsx          # Card de exibição
-│   └── lib/
-│       └── prisma.ts             # Configuração do Prisma
+│   │   ├── auth/                  # Componentes de autenticação
+│   │   ├── dashboard/             # Componentes do dashboard
+│   │   ├── providers/             # Providers (AuthProvider)
+│   │   └── ui/                    # Componentes de UI
+│   ├── lib/
+│   │   ├── auth.ts                # Utilitários de autenticação
+│   │   ├── prisma.ts              # Cliente Prisma
+│   │   └── imageUtils.ts          # Utilitários de imagem
+│   └── types/                     # Tipos TypeScript
 ├── prisma/
-│   └── schema.prisma             # Schema do banco
-├── .env                          # Variáveis de ambiente
+│   └── schema.prisma              # Schema do banco
+├── .memory-bank/                  # Documentação do projeto
+│   ├── tasks/                     # Organização das sprints
+│   └── ...                        # Outros arquivos de documentação
+├── .env                           # Variáveis de ambiente
 └── package.json
 ```
 
 ## 🗄️ Schema do Banco
 
 ```prisma
-model Note {
+model User {
   id        String   @id @default(cuid())
-  title     String
-  content   String
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  barbershopId String?
+  barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
+}
+
+model Barbershop {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  phone       String
+  email       String?
+  logo        String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  users User[]
+  services Service[]
+  subscriptions Subscription[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal
+  duration    Int      # em minutos
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  BARBER
+  USER
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  CASH
 }
 ```
 
 ## 🔌 APIs Disponíveis
 
-### GET `/api/notes`
-Lista todas as notas ordenadas por data de criação.
+### **Autenticação**
+- `POST /api/auth/login` - Login de usuário
+- `POST /api/auth/register` - Registro de usuário
+- `POST /api/auth/logout` - Logout
 
-**Resposta:**
-```json
-[
-  {
-    "id": "clx123...",
-    "title": "Minha Nota",
-    "content": "Conteúdo da nota",
-    "createdAt": "2024-01-01T10:00:00Z",
-    "updatedAt": "2024-01-01T10:00:00Z"
-  }
-]
-```
+### **Barbearias**
+- `GET /api/barbershops` - Listar barbearias
+- `POST /api/barbershops` - Criar barbearia
+- `GET /api/barbershops/[id]` - Buscar barbearia específica
+- `PUT /api/barbershops/[id]` - Atualizar barbearia
+- `DELETE /api/barbershops/[id]` - Deletar barbearia
 
-### POST `/api/notes`
-Cria uma nova nota.
+### **Usuários**
+- `GET /api/users` - Listar usuários
+- `POST /api/users` - Criar usuário
+- `GET /api/users/[id]` - Buscar usuário específico
+- `PUT /api/users/[id]` - Atualizar usuário
+- `DELETE /api/users/[id]` - Deletar usuário
 
-**Body:**
-```json
-{
-  "title": "Título da nota",
-  "content": "Conteúdo da nota"
-}
-```
+### **Assinaturas**
+- `GET /api/subscriptions` - Listar assinaturas
+- `POST /api/subscriptions` - Criar assinatura
+- `GET /api/subscriptions/[id]` - Buscar assinatura específica
+- `PUT /api/subscriptions/[id]` - Atualizar assinatura
 
-### PUT `/api/notes/[id]`
-Atualiza uma nota existente.
-
-**Body:**
-```json
-{
-  "title": "Novo título",
-  "content": "Novo conteúdo"
-}
-```
-
-### DELETE `/api/notes/[id]`
-Deleta uma nota.
+### **Configurações**
+- `GET /api/config` - Buscar configurações do sistema
+- `PUT /api/config` - Atualizar configurações
 
 ## 🎨 Interface
 
-### Funcionalidades da UI:
-- **Formulário responsivo** para criar/editar notas
-- **Cards de notas** com design moderno
-- **Botões de ação** (editar/deletar) em cada nota
-- **Loading states** e feedback visual
-- **Confirmação** antes de deletar
-- **Formatação de data** em português
+### **Dashboard Super Admin**
+- Visão geral do sistema
+- Estatísticas de barbearias e usuários
+- Gestão de configurações globais
+- Controle de onboarding interativo
 
-### Componentes:
-- `NoteForm`: Formulário de criação/edição
-- `NoteCard`: Exibição individual de cada nota
-- `page.tsx`: Interface principal com lógica de estado
+### **Dashboard de Barbearia**
+- Gestão de agendamentos
+- Calendário interativo
+- Gestão de clientes
+- Relatórios e métricas
+
+### **Funcionalidades da UI**
+- **Interface responsiva** mobile-first
+- **Loading states** e feedback visual
+- **Formulários validados** em tempo real
+- **Navegação intuitiva** com sidebar
+- **Design moderno** com Tailwind CSS
+
+## 📊 Organização do Desenvolvimento
+
+### **Sprints e Tasks**
+O projeto está organizado em sprints com tasks detalhadas. Para acessar a documentação completa das sprints:
+
+📋 **[Ver Organização das Tasks](.memory-bank/tasks/README.md)**
+
+### **Sprints Disponíveis**
+- **Sprint 1** - Prioridade Crítica (2 semanas): Sistema básico de agendamentos
+- **Sprint 2** - Alta Prioridade (3 semanas): Interfaces básicas + preparação calendário
+- **Sprint 3** - Média Prioridade (3 semanas): Funcionalidades avançadas + integração calendário
+- **Sprint Onboarding** - Prioridade Alta (5 semanas): Onboarding interativo completo
+- **Sprint 4** - Baixa Prioridade (4 semanas): Integrações externas
+- **Sprint 5** - Melhorias de UX (2 semanas): shadcn/ui e responsividade
+
+### **Progresso Atual**
+- **Total de Tasks**: 36
+- **Tempo Total**: 18 semanas
+- **Progresso**: 0% (0/36 tasks concluídas)
 
 ## 🛠️ Comandos Úteis
 
@@ -228,19 +366,25 @@ npx prisma db pull
 2. Verifique se todas as dependências estão instaladas
 3. Limpe o cache: `rm -rf .next`
 
-### Problemas de performance:
-1. Use `npx prisma studio` para verificar queries
-2. Considere usar Prisma Accelerate para produção
-3. Otimize queries com `select` e `include`
+### Problemas de autenticação:
+1. Verifique se `JWT_SECRET` está configurado
+2. Teste o login via API
+3. Verifique se o bcryptjs está funcionando
 
 ## 📝 Próximos Passos
 
-- [ ] Adicionar autenticação
-- [ ] Implementar categorias/tags
-- [ ] Adicionar busca e filtros
-- [ ] Implementar markdown no conteúdo
-- [ ] Adicionar upload de imagens
-- [ ] Implementar compartilhamento de notas
+### **Em Desenvolvimento**
+- [ ] Sistema de agendamentos completo
+- [ ] Gestão de clientes
+- [ ] Calendário interativo
+- [ ] Integração com calendários externos
+
+### **Planejado**
+- [ ] Onboarding interativo
+- [ ] Sistema de notificações
+- [ ] Relatórios avançados
+- [ ] Sistema de pagamentos
+- [ ] shadcn/ui para melhor UX
 
 ## 🤝 Contribuição
 
@@ -256,4 +400,16 @@ Este projeto está sob a licença MIT.
 
 ---
 
-**Desenvolvido com ❤️ usando Next.js + Prisma + PostgreSQL**
+**Desenvolvido com ❤️ para revolucionar a gestão de barbearias**
+
+### 📞 **Contato e Suporte**
+
+Para dúvidas sobre o desenvolvimento:
+- Revisar documentação específica de cada sprint
+- Consultar arquivos de design e arquitetura
+- Verificar dependências entre tasks
+
+Para mudanças no projeto:
+- Documentar alterações nos arquivos
+- Atualizar dependências conforme necessário
+- Comunicar mudanças à equipe

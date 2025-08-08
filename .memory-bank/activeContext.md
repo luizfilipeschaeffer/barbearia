@@ -1,62 +1,173 @@
-# Active Context - Sistema de Barbearia
+# Contexto Ativo - Sistema de Barbearia
 
-## Foco Atual
-Transformar o projeto atual de "sistema de notas" em um sistema completo de gerenciamento de barbearia.
+## 🎯 **Foco Atual**
+Análise completa da task-2-pending.md e atualização das sprints com informações sobre onboarding interativo e integração de calendário.
 
-## Estado Atual do Projeto
-- ✅ Next.js 15 configurado com TypeScript
-- ✅ Prisma ORM conectado ao PostgreSQL (Neon)
-- ✅ Tailwind CSS configurado
-- ✅ API Routes funcionais (CRUD básico)
-- ✅ Componentes React básicos
-- 🔄 **PENDENTE**: Configurar shadcn/ui
-- 🔄 **PENDENTE**: Transformar schema do banco
-- 🔄 **PENDENTE**: Criar interfaces específicas
+## 📋 **Análise Realizada**
 
-## Próximas Ações Imediatas
+### Task-2-Pending.md - Onboarding Interativo
+**Objetivo**: Desenvolver fluxo de onboarding interativo para cadastro de barbearias com sincronização de calendário Google/Apple.
 
-### 1. Configurar shadcn/ui
-```bash
-npx shadcn@latest init
-```
-- Configurar tema e componentes base
-- Implementar design system consistente
+#### Principais Requisitos Identificados:
+1. **Fluxo Multi-step**: Wizard com 8 etapas (obrigatórias e opcionais)
+2. **Sincronização de Agenda**: Integração OAuth2 com Google/Apple Calendar
+3. **Controle Administrativo**: Toggle para habilitar/desabilitar onboarding
+4. **Etapas Opcionais**: Logo, horários, equipe, sincronização de agenda
+5. **Validação Robusta**: Campos obrigatórios, máscaras, persistência temporária
 
-### 2. Transformar Schema do Banco
-- Criar modelos: Client, Service, Booking
-- Migrar dados existentes (se necessário)
-- Atualizar Prisma schema
+#### Subtarefas Mapeadas:
+1. Levantamento e Validação de Requisitos
+2. Estruturação do Fluxo de Etapas (Wizard)
+3. Implementação de Componentes de UI/UX
+4. Validação e Persistência de Dados
+5. Integração com Backend
+6. Implementação da Sincronização de Agenda
+7. Revisão, Edição e Finalização
+8. Configuração e Controle do Onboarding
+9. Testes e Validação Final
+10. Documentação e Comentários
 
-### 3. Criar Estrutura de Páginas
-- Dashboard principal
-- Gestão de clientes
-- Gestão de serviços
-- Sistema de agendamento
+## 🔄 **Atualizações Realizadas**
 
-### 4. Implementar Componentes Base
-- Formulários de cadastro
-- Tabelas de dados
-- Calendário de agendamentos
-- Gráficos de relatórios
+### Nova Sprint Criada:
+- **Sprint Onboarding Interativo**: 11 tasks, 27 dias úteis, 5 semanas
+- **Foco**: Desenvolvimento completo do onboarding interativo
+- **Arquivo**: `sprint-onboarding-interativo.md`
 
-## Decisões Pendentes
-1. **Autenticação**: NextAuth.js vs Clerk vs Auth0
-2. **Estado Global**: Zustand vs Context API
-3. **Formulários**: React Hook Form vs Formik
-4. **Gráficos**: Recharts vs Chart.js
-5. **Notificações**: Email vs SMS vs Push
+### Sprint 2 Atualizada:
+- **Novas Tasks**: Task 2.5 (Preparação para Integração de Calendário), Task 2.6 (Configurações de Sistema para Onboarding)
+- **Duração**: 2 → 3 semanas
+- **Tempo**: 13 → 16 dias úteis
+- **Tasks**: 4 → 6 tasks
 
-## Desafios Identificados
-- Migração de dados existentes
-- Design responsivo para mobile
-- Performance com muitos agendamentos
-- Integração com sistemas externos
+### Sprint 3 Atualizada:
+- **Novas Tasks**: Task 3.5 (Integração Avançada de Calendário), Task 3.6 (Melhorias no Sistema de Notificações)
+- **Tempo**: 15 → 21 dias úteis
+- **Tasks**: 4 → 6 tasks
 
-## Métricas de Progresso
-- [ ] shadcn/ui configurado
-- [ ] Schema do banco atualizado
-- [ ] Dashboard básico implementado
-- [ ] CRUD de clientes funcionando
-- [ ] CRUD de serviços funcionando
-- [ ] Sistema de agendamento básico
-- [ ] Relatórios básicos
+### README Atualizado:
+- **Estrutura**: Incluída nova sprint de onboarding
+- **Cronograma**: Atualizado com novas durações
+- **Métricas**: 25 → 36 tasks, 13 → 18 semanas
+
+## 📊 **Métricas Atualizadas**
+
+### Progresso Geral:
+- **Total de Tasks**: 36 (era 25)
+- **Tempo Total**: 18 semanas (era 13)
+- **Sprints**: 7 sprints (era 6)
+- **Progresso**: 0% (0/36 tasks concluídas)
+
+### Novas Funcionalidades Mapeadas:
+- **Onboarding Interativo**: Wizard completo com 8 etapas
+- **Sincronização OAuth2**: Google/Apple Calendar
+- **Controle Administrativo**: Configurações de sistema
+- **Integração Avançada**: Calendário bidirecional
+- **Sistema de Notificações**: Expandido para calendário
+
+## 🎯 **Próximos Passos**
+
+### Prioridades Imediatas:
+1. **Sprint 1**: Implementar modelos Booking e Client
+2. **Sprint 2**: Desenvolver interfaces básicas + preparação calendário
+3. **Sprint Onboarding**: Iniciar desenvolvimento do wizard
+
+### Dependências Identificadas:
+- **Task 2.5** depende de **Task 2.2** (Sistema de Horários)
+- **Task 3.5** depende de **Task 2.5** (Preparação Calendário)
+- **Task 3.6** depende de **Task 3.2** e **Task 3.5**
+
+### Riscos Mapeados:
+- **Complexidade OAuth2**: Requer testes extensivos
+- **Performance**: Upload de imagens e sincronização
+- **UX**: Fluxo longo pode cansar usuário
+- **Compatibilidade**: Cross-browser testing necessário
+
+## 📝 **Decisões Técnicas**
+
+### Onboarding Interativo:
+- **Arquitetura**: Wizard multi-step com navegação flexível
+- **Persistência**: localStorage para dados temporários
+- **Validação**: Em tempo real com feedback visual
+- **Etapas Opcionais**: Claramente marcadas e documentadas
+
+### Integração de Calendário:
+- **OAuth2**: Google Calendar e Apple Calendar
+- **Segurança**: Armazenamento seguro de tokens
+- **Bidirecional**: Sincronização completa
+- **Configuração**: Flexível via painel administrativo
+
+### Controle de Sistema:
+- **Configuração**: Toggle no painel super-admin
+- **Logs**: Acompanhamento de uso
+- **Redirecionamento**: Baseado na configuração
+- **Flexibilidade**: Onboarding tradicional como fallback
+
+## 🔍 **Pontos de Atenção**
+
+### Desenvolvimento:
+- **Complexidade**: Onboarding é uma funcionalidade complexa
+- **Tempo**: 5 semanas para desenvolvimento completo
+- **Testes**: Necessários em múltiplos dispositivos/navegadores
+- **Documentação**: Comentários em etapas opcionais obrigatórios
+
+### UX/UI:
+- **Fluxo Intuitivo**: Cada etapa deve ser clara
+- **Etapas Opcionais**: Benefícios bem explicados
+- **Sincronização**: Experiência segura e transparente
+- **Responsividade**: Mobile-first approach
+
+### Segurança:
+- **OAuth2**: Implementação segura
+- **Tokens**: Armazenamento criptografado
+- **Privacidade**: Dados do usuário protegidos
+- **Revogação**: Opção de desconectar facilmente
+
+## 📈 **Roadmap Atualizado**
+
+### Fase 1 (Sprints 1-2): 5 semanas
+- Sistema básico de agendamentos
+- Interfaces básicas
+- Preparação para calendário
+
+### Fase 2 (Sprint 3): 3 semanas
+- Funcionalidades avançadas
+- Integração avançada de calendário
+
+### Fase 3 (Sprint Onboarding): 5 semanas
+- Onboarding interativo completo
+- Sincronização de calendário
+
+### Fase 4 (Sprints 4-5): 6 semanas
+- Integrações externas
+- Melhorias de UX
+
+### Fase 5 (Contínuo): Sempre
+- Qualidade e testes
+- Documentação
+
+## ✅ **Status Atual**
+
+### Concluído:
+- ✅ Análise completa da task-2-pending.md
+- ✅ Criação da sprint de onboarding
+- ✅ Atualização das sprints existentes
+- ✅ Atualização do README
+- ✅ Mapeamento de dependências
+- ✅ Identificação de riscos
+
+### Em Progresso:
+- 🔄 Preparação para desenvolvimento
+- 🔄 Definição de prioridades
+- 🔄 Planejamento de recursos
+
+### Próximo:
+- ⏳ Início do desenvolvimento
+- ⏳ Implementação das tasks prioritárias
+- ⏳ Testes e validação
+
+---
+
+**Última Atualização**: Dezembro 2024  
+**Próxima Revisão**: Semanal  
+**Responsável**: Equipe de Desenvolvimento
