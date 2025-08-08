@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface StatItem {
   number: number;
@@ -15,24 +15,7 @@ interface StatsProps {
 export default function Stats({ items }: StatsProps) {
   const [animatedNumbers, setAnimatedNumbers] = useState<number[]>(new Array(items.length).fill(0));
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animateNumbers();
-        }
-      });
-    });
-
-    const element = document.getElementById('stats-section');
-    if (element) {
-      observer.observe(element);
-    }
-
-    return () => observer.disconnect();
-  }, [animateNumbers]);
-
-  const animateNumbers = () => {
+  const animateNumbers = useCallback(() => {
     items.forEach((item, index) => {
       const duration = 2000;
       const steps = 60;
@@ -52,7 +35,24 @@ export default function Stats({ items }: StatsProps) {
         });
       }, duration / steps);
     });
-  };
+  }, [items]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateNumbers();
+        }
+      });
+    });
+
+    const element = document.getElementById('stats-section');
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, [animateNumbers]);
 
   return (
     <section id="stats-section" className="py-16 bg-gradient-to-r from-yellow-500 to-yellow-600">

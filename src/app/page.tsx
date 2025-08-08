@@ -9,8 +9,7 @@ import {
   BarChart3, 
   Bell, 
   Smartphone, 
-  CheckCircle, 
-  Play
+  CheckCircle
 } from 'lucide-react';
 import FAQ from '@/components/ui/FAQ';
 import Stats from '@/components/ui/Stats';
