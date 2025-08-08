@@ -118,16 +118,12 @@ export default function Home() {
                 Primeira plataforma completa para barbearias. Agendamentos online, gestão inteligente 
                 e aumento de receita garantido. Seja pioneiro na transformação do seu negócio.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex justify-center lg:justify-start">
                 <button
                   onClick={() => router.push('/auth/register')}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Cadastre sua barbearia grátis
-                </button>
-                <button className="border-2 border-gray-300 hover:border-yellow-500 text-gray-700 hover:text-yellow-500 font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-300 flex items-center justify-center gap-2">
-                  <Play className="w-5 h-5" />
-                  Ver demonstração
                 </button>
               </div>
             </div>
